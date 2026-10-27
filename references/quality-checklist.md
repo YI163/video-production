@@ -8,6 +8,9 @@ Use only the sections relevant to the job; do not skip a section that the brief 
 - [ ] If revision: approved frozen (copy + SHA-256), change list written, requested vs unrequested marked.
 - [ ] Brief has platform/aspect/duration/language/music/delivery path.
 - [ ] Source footage exists, readable, and backed up; originals untouched.
+- [ ] New production / full redo: 3–5 reference vlogs studied; `reference-study.md` written with 3 principles, 2 avoids, 2–3 options.
+- [ ] Reference study extracts principles, not shot-for-shot copies/faces/music/copyrighted assets.
+
 - [ ] Toolchain available: ffmpeg, Python/Pillow, Whisper (if speech), CJK fonts.
 - [ ] Disk space for intermediates (roughly 3–5× final size).
 

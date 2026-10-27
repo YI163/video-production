@@ -73,6 +73,21 @@ Write a short `00-production-spec.md` (or reuse the project's existing one) with
 
 ---
 
+## Step 1.5 — Reference study (new production / full redo)
+
+Before choosing the visual system or writing the shot table, study **3–5 high-quality reference vlogs** in the same platform/genre/duration. Extract principles, not shots:
+
+- first 1–3s hook: image / words / sound;
+- structure: shot count, average shot length, A-roll/B-roll ratio, fact-card/end-card placement;
+- packaging: subtitle size/position, title, color, transitions, information density;
+- sound: voice, BGM, SFX, ambience;
+- why it works in one sentence;
+- **transferable principle vs surface element**.
+
+Use `references/reference-study.md` for the template. Do not copy shot-for-shot, faces, music, or copyrighted assets. Write a short `reference-study.md` in the project and use it to make 2–3 creative options before committing. For a **local patch**, skip this unless the user asks.
+
+---
+
 ## Step 2 — Material audit (evidence, not impressions)
 
 For every clip record:
@@ -214,6 +229,7 @@ Do not turn one approved cut into a template. The reusable asset is the process 
 - `references/workflow.md` — full 7-stage workflow with artifacts and gates.
 - `references/modification-protection.md` — versioning, minimal diff, A/B, rollback.
 - `references/quality-checklist.md` — pre-flight, technical, visual, subtitle, audio, delivery checklists.
+- `references/reference-study.md` — how to study 3–5 reference vlogs and extract principles without copying.
 - `references/tech-recipes.md` — ffmpeg/Pillow/Whisper/loudness recipes and known pitfalls.
 - `references/skill-sources.md` — Agent Skills format, public examples, and host installation notes (Claude Code, DSH, other hosts).
 - `scripts/check_video.py` — reusable technical checker.

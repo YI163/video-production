@@ -34,6 +34,8 @@ Both versions passed the technical specs. The quality drop was perceptual/struct
 
 ## Reusable lessons
 
+- **Study 3–5 high-quality reference vlogs before locking the visual system.** Extract hook/structure/packaging/sound principles; do not copy shots, faces, music, or assets.
+
 - **Classify the job first:** new production / local patch / full redo. “Replace all footage” is a new production.
 - **Protect the approved version** before touching anything: copy, hash, read-only, versioned.
 - **Do not change an approved visual system** unless the user asks or the new source genuinely cannot support it. If you change it, test headroom/logo/hands and re-review.
