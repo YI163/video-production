@@ -2,7 +2,7 @@
 
 > 来源：一个真实的 45–60s 竖屏 vlog 案例与一次失败修改的对照（均已匿名，不含素材/人物/机构信息）。
 > 目标：让“高质量成片”更可重复，同时保留创意判断空间；不是把已批准版的镜头/滤镜固化成模板。
-> 配套：`case-study.md`（为什么）、`modification-protection.md`（改片）、`../SKILL.md`（DSH Skill）。
+> 配套：`case-study.md`（为什么）、`modification-protection.md`（改片）、`../SKILL.md`（Agent Skill）。
 
 ---
 

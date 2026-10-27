@@ -1,8 +1,22 @@
 # video-production
 
-一个可复用的 **Agent Skill**，用于制作 45–90 秒竖屏短视频：素材审计、分镜脚本、视觉包装、字幕、声音、独立审核、技术质检、交付，以及不破坏已批准版本的修改流程。
+一个**通用 Agent Skill**，用于制作 45–90 秒竖屏短视频：素材审计、分镜脚本、视觉包装、字幕、声音、独立审核、技术质检、交付，以及不破坏已批准版本的修改流程。
+
+本 Skill **不绑定 DeepSeek Harness**。它采用 Agent Skills 的通用约定：一个目录 + 根目录 `SKILL.md` + 可选 `references/`、`scripts/`、`assets/`。任何能读取 `SKILL.md` 并允许访问文件的宿主都可以使用；不同宿主的“技能目录在哪里、是否自动触发、是否能执行脚本”可能不同。
 
 这是一个**匿名化公开包**：不含成片、源素材、人物、机构名、会话日志、团队记录和本机路径。案例研究是方法复盘，不是逐镜模板。
+
+## 通用性说明
+
+| 部分 | 是否通用 | 说明 |
+|---|---|---|
+| `SKILL.md` 格式 | 是 | 仅使用 `name` + `description` frontmatter；无宿主专用字段 |
+| 工作流/清单/配方 | 是 | 纯 Markdown，任何能读文件的 Agent 都可用 |
+| `scripts/` | 是（有环境依赖） | Python/ffmpeg 脚本；宿主需允许执行 shell/Python，或由 Agent 手动调用 |
+| 触发方式 | 取决于宿主 | 支持自动 Skill 选择的宿主会按 description 触发；不支持的宿主需显式说“读 SKILL.md” |
+| 安装路径 | 否（宿主相关） | 见下方示例；这是唯一的宿主差异 |
+
+**结论：** 核心内容是通用的；宿主差异只保留在“安装”一节，DSH 只作为“一个已验证宿主”的示例。
 
 ## 仓库内容
 
@@ -24,27 +38,48 @@
 └── README.md
 ```
 
-## 安装
+## 安装（按宿主选择）
 
-Skill 是一个目录，根目录必须有 `SKILL.md`。把本仓库复制到你的 Agent host 使用的 skill 根目录即可。
+核心原则只有一句：**把整个 `video-production/` 目录放到宿主读取 skills 的根目录下**，确保根目录有 `SKILL.md`。
 
-### DeepSeek Harness 用户级
+### Claude Code
+
+个人级：
 
 ```bash
 git clone https://github.com/YI163/video-production.git
+mkdir -p ~/.claude/skills/video-production
+rsync -a --exclude .git video-production/ ~/.claude/skills/video-production/
+```
+
+项目级：
+
+```bash
+mkdir -p <project>/.claude/skills/video-production
+rsync -a --exclude .git video-production/ <project>/.claude/skills/video-production/
+```
+
+### DeepSeek Harness（已验证的一个宿主）
+
+用户级：
+
+```bash
 mkdir -p ~/.agents/skills/video-production
 rsync -a --exclude .git video-production/ ~/.agents/skills/video-production/
 ```
 
-### 项目级（DSH 优先级更高）
+项目级：
 
 ```bash
-git clone https://github.com/YI163/video-production.git
 mkdir -p <project>/.dsh/skills/video-production
 rsync -a --exclude .git video-production/ <project>/.dsh/skills/video-production/
 ```
 
-DSH 的 `skill-filesystem` 会监视技能根目录，正常情况下不需要重启。若 Skill 不出现，先用真正的 YAML 解析器检查 frontmatter（见下方“验证”），不要只靠肉眼看。
+DSH 的 `skill-filesystem` 会监视技能根目录，正常情况下无需重启。若 Skill 不出现，先用真正的 YAML 解析器检查 frontmatter（见“验证”），不要只靠肉眼。
+
+### 其它宿主
+
+把目录放到该宿主文档规定的 skill/agent 目录；如果宿主不支持 `SKILL.md` 自动发现，直接把 `SKILL.md` 的路径交给 Agent，让它按文件执行。核心流程不依赖任何 DSH 工具。
 
 ## 使用
 
@@ -84,6 +119,7 @@ Skill 会先判断任务类型：**新制作 / 局部修改 / 全量重做**。�
 - `scripts/check_video.py` 在真实 1080×1920 / 30fps 成片上运行通过，返回 `decode_ok: true` 且无 failures。
 - `scripts/contact_sheet.sh` 能从同一成片生成 1 秒接触表。
 - 公开包不含成片或会话日志，因此不能只靠本仓库复刻原片；案例只保留方法。
+- **宿主测试范围：** 本包在 DeepSeek Harness 中实际加载过；Claude Code/其它宿主按 Agent Skills 格式兼容，但未逐一实测自动触发与脚本执行。若你的宿主行为不同，按“把 `SKILL.md` 交给 Agent”的降级方式使用。
 
 ## 隐私与匿名
 

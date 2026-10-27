@@ -215,7 +215,7 @@ Do not turn one approved cut into a template. The reusable asset is the process 
 - `references/modification-protection.md` — versioning, minimal diff, A/B, rollback.
 - `references/quality-checklist.md` — pre-flight, technical, visual, subtitle, audio, delivery checklists.
 - `references/tech-recipes.md` — ffmpeg/Pillow/Whisper/loudness recipes and known pitfalls.
-- `references/skill-sources.md` — public Agent Skills and video-skill examples this skill learned from (Anthropic Agent Skills, muse-creative-skills, refay-skills) plus DSH discovery notes.
+- `references/skill-sources.md` — Agent Skills format, public examples, and host installation notes (Claude Code, DSH, other hosts).
 - `scripts/check_video.py` — reusable technical checker.
 - `scripts/contact_sheet.sh` — quick 1s contact sheet.
 

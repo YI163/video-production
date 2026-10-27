@@ -1,6 +1,6 @@
-# Skill sources and format notes
+# Skill sources and host notes
 
-This skill was designed from **public Agent Skills patterns** and an anonymized production retrospective. It was not copied from a personal or local skill template.
+This skill is designed from **public Agent Skills patterns** and an anonymized production retrospective. It is not tied to a single agent host.
 
 ## Format
 
@@ -10,24 +10,30 @@ A skill is a directory with a `SKILL.md` at its root. YAML frontmatter requires 
 2. the `SKILL.md` body loads when the skill is selected;
 3. references/scripts load only when needed.
 
+Only portable frontmatter fields are used (`name`, `description`). There are no host-specific keys, tool names, or install hooks in the skill body.
+
 **Validate frontmatter with a real YAML parser.** An unquoted `description` containing `: ` (for example `Triggers include: ...`) is invalid YAML; a provider may drop the whole skill silently. Quote the description or use a block scalar (`>-`). A regex or a visual check is not enough.
 
-## DSH filesystem provider (one supported host)
+## Where to install (host examples)
 
-The DeepSeek Harness `skill-filesystem` provider scans, in priority order:
+The only host-specific part is the skills directory. Copy the whole `video-production/` folder into the root your host reads.
 
-| Rank | Source | Path |
+| Host | Personal / user root | Project root |
 |---|---|---|
-| 100 | project `.dsh` | `<projectRoot>/.dsh/skills` |
-| 200 | project `.agents` | `<projectRoot>/.agents/skills` |
-| 300 | custom | `Config.customSkillDirs` |
-| 400 | user DSH | `<dshHome>/skills` |
-| 500 | user agents | `<agentsHome>/skills` |
+| Claude Code | `~/.claude/skills/` | `<project>/.claude/skills/` |
+| DeepSeek Harness (DSH) | `~/.agents/skills/` | `<project>/.dsh/skills/` |
+| Other Agent Skills host | consult host docs | consult host docs |
 
-- A skill can be a directory bundle `<name>/SKILL.md` or a flat `<name>.md`; nested `**/SKILL.md` files are not discovered.
-- The provider watches the roots, so a fixed skill can appear without an app restart. A malformed skill stays absent until its frontmatter is valid.
-- For a project install: copy this directory to `<project>/.dsh/skills/video-production/`. For a user install: copy it to `~/.agents/skills/video-production/`.
-- The current case validated loading from a project `.dsh/skills` root; the global copy is a fallback.
+- The skill directory must be directly under the root: `<root>/video-production/SKILL.md`.
+- Nested `**/SKILL.md` bundles are not discovered by every host; keep the skill at the top level.
+- Some hosts auto-select skills from the description; others require you to point the agent at `SKILL.md`. Both are fine; the workflow is plain Markdown.
+- Some hosts do not execute `scripts/` automatically. If shell/Python execution is available, run the scripts explicitly; otherwise use the Markdown checklists and recipes.
+
+## Tested behavior
+
+- **DSH:** the skill was loaded and the YAML frontmatter was validated in a real session.
+- **Claude Code / other hosts:** the package follows the Agent Skills `SKILL.md` convention, but automatic triggering and script execution were not individually tested here. If your host differs, fall back to “read `SKILL.md` and follow it”.
+- The scripts themselves are plain Python/Bash and are not tied to any host.
 
 ## Public Agent Skills references
 
@@ -52,13 +58,14 @@ The DeepSeek Harness `skill-filesystem` provider scans, in priority order:
 | Pattern | Source | Use here |
 |---|---|---|
 | Trigger-rich description | Anthropic best practices | Chinese + English trigger words; explicit “when not to use” |
-| Progressive disclosure | Anthropic spec | Short `SKILL.md`; detailed workflow/checklist/tech recipes in references |
+| Progressive disclosure | Anthropic spec | Short `SKILL.md`; details in references |
 | “When to use / when not to” | phone-shot-video | Prevents over-triggering on long-form/VFX/audio-only |
 | Project setup → review | painterly-short-film | 7-stage workflow + independent gates |
 | Small deterministic scripts | Anthropic best practices | `check_video.py`, `contact_sheet.sh` |
 
 ## Maintenance
 
-- If the host changes skill roots/frontmatter, update this file and `SKILL.md` first.
+- Keep the body portable: no host-specific tool names or paths; put install paths in this file/README only.
+- If a host changes its skill roots/frontmatter, update this file, not the workflow.
 - Add a failure mode only when there is a second independent case; one case is evidence, not a law.
 - Keep the package small: no media, no session logs, no credentials, no personal paths.
