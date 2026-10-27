@@ -1,98 +1,99 @@
 # video-production
 
-A reusable **Agent Skill** for producing short-form vertical video: material audit, shot script, visual packaging, subtitles, audio, independent review, technical QC, delivery, and version-safe revisions.
+一个可复用的 **Agent Skill**，用于制作 45–90 秒竖屏短视频：素材审计、分镜脚本、视觉包装、字幕、声音、独立审核、技术质检、交付，以及不破坏已批准版本的修改流程。
 
-This is an **anonymized public package**. It contains no footage, no people, no institution names, no session logs, no team records, and no personal filesystem paths. The included case study is a process note, not a shot-for-shot template.
+这是一个**匿名化公开包**：不含成片、源素材、人物、机构名、会话日志、团队记录和本机路径。案例研究是方法复盘，不是逐镜模板。
 
-## What is inside
+## 仓库内容
 
 ```text
 .
-├── SKILL.md                    # trigger, workflow, failure modes, quality bar
+├── SKILL.md                    # 触发条件、工作流、失败模式、质量标准
 ├── references/
-│   ├── case-study.md           # anonymized: what worked, what regressed
-│   ├── workflow.md             # full 7-stage workflow
+│   ├── case-study.md           # 匿名案例：什么做对了、什么退化了
+│   ├── workflow.md             # 完整 7 阶段 Workflow
 │   ├── modification-protection.md
 │   ├── quality-checklist.md
 │   ├── tech-recipes.md
 │   └── skill-sources.md
 ├── scripts/
-│   ├── check_video.py          # technical checker (no third-party deps)
-│   └── contact_sheet.sh        # quick 1s contact sheet
-├── LICENSE                     # MIT for scripts
-├── LICENSE-DOCS                # CC BY 4.0 for documentation/methodology
+│   ├── check_video.py          # 技术检查器（无第三方依赖）
+│   └── contact_sheet.sh        # 1 秒接触表
+├── LICENSE                     # MIT（scripts/）
+├── LICENSE-DOCS                # CC BY 4.0（文档/方法论）
 └── README.md
 ```
 
-## Install
+## 安装
 
-The skill is a directory with a `SKILL.md` at its root. Copy it into a skill root used by your agent host.
+Skill 是一个目录，根目录必须有 `SKILL.md`。把本仓库复制到你的 Agent host 使用的 skill 根目录即可。
 
-For a DeepSeek Harness user install:
+### DeepSeek Harness 用户级
 
 ```bash
-git clone <this-repo> video-production
+git clone https://github.com/YI163/video-production.git
 mkdir -p ~/.agents/skills/video-production
 rsync -a --exclude .git video-production/ ~/.agents/skills/video-production/
 ```
 
-For a project-local install (higher priority in DSH):
+### 项目级（DSH 优先级更高）
 
 ```bash
+git clone https://github.com/YI163/video-production.git
 mkdir -p <project>/.dsh/skills/video-production
 rsync -a --exclude .git video-production/ <project>/.dsh/skills/video-production/
 ```
 
-The DSH `skill-filesystem` provider watches its roots, so a valid skill should appear without restarting. If it does not, validate the YAML frontmatter with a real parser (see below).
+DSH 的 `skill-filesystem` 会监视技能根目录，正常情况下不需要重启。若 Skill 不出现，先用真正的 YAML 解析器检查 frontmatter（见下方“验证”），不要只靠肉眼看。
 
-## Use
+## 使用
 
-Ask naturally; the description triggers on tasks such as:
+直接用自然语言提出任务即可，例如：
 
-- “剪一个 45–60 秒的竖屏 vlog，配中文字幕”
-- “把这些素材剪成能发的短视频，先做脚本”
-- “给视频加标题、事实卡、片尾卡”
-- “把这段 Log 素材调色，并检查字幕/响度”
-- “修改已批准的版本，但不要破坏原来的整体感”
+- “剪一个 45–60 秒的竖屏 vlog，配中文字幕。”
+- “把这些素材剪成能发的短视频，先做脚本。”
+- “给视频加标题、事实卡、片尾卡。”
+- “把这段 Log 素材调色，并检查字幕和响度。”
+- “修改已批准的版本，但不要破坏原来的整体感。”
 
-The skill starts by classifying the job: **new production / local patch / full redo**. If the user says “replace all footage”, that is a new production, not a patch.
+Skill 会先判断任务类型：**新制作 / 局部修改 / 全量重做**。如果用户说“把所有素材都换掉”，那是新制作，不是局部修改。
 
-## Requirements
+## 依赖
 
-- `ffmpeg` (the recipes assume ffmpeg 8; most commands work on 6+).
-- Python 3 for `scripts/check_video.py`; no third-party packages.
-- Pillow only if you use the overlay/subtitle recipes.
-- Whisper (optional) for transcripts.
-- CJK fonts for Chinese subtitles (e.g. Hiragino Sans GB, Noto Sans CJK, Source Han Sans).
+- `ffmpeg`（示例按 ffmpeg 8 写，多数命令 ffmpeg 6+ 可用）。
+- Python 3（运行 `scripts/check_video.py`，无第三方包）。
+- Pillow（仅当使用包装/字幕生成配方时需要）。
+- Whisper（可选，用于逐字稿）。
+- 中文字体（如 Hiragino Sans GB、Noto Sans CJK、思源黑体）。
 
-## Design principles
+## 设计原则
 
-1. Write a production constitution before editing.
-2. Audit material with timestamps and frames, not impressions.
-3. Turn the script into an executable shot table.
-4. Choose the visual system from the source (card vs full-bleed vs hybrid); do not change an approved system unless asked.
-5. Keep material, script, and final review independent.
-6. Measure technical specs; a checker is necessary, not sufficient.
-7. Version and hash the delivery; never overwrite the only approved version.
+1. 动手剪辑前，先写“制作宪法”。
+2. 素材审计要有时间码和抽帧证据，不靠印象。
+3. 脚本必须能直接施工：逐镜源入出、成片时间码、字幕、包装、声音。
+4. 视觉系统由素材条件决定（卡片 / 满屏 / 混合）；未经要求不改已批准的系统。
+5. 素材、脚本、终审三个 gate 尽量独立。
+6. 技术指标要测；检查器通过是必要条件，不是充分条件。
+7. 交付要版本化、哈希化；绝不覆盖唯一的已批准版本。
 
-The full workflow and checklists are in `references/`; the skill body stays short and loads details on demand.
+完整流程和检查清单在 `references/`，`SKILL.md` 只保留短正文，细节按需加载。
 
-## Validation
+## 验证
 
-- `SKILL.md` frontmatter parses with a real YAML parser (the `description` is quoted; an unquoted `: ` can silently drop the skill).
-- `scripts/check_video.py` was run against a real 1080×1920 30 fps export; it returned `decode_ok: true` and no failures.
-- `scripts/contact_sheet.sh` generated a 1s contact sheet from the same export.
-- No production media or session logs are included, so the case study cannot be re-cut from this repository alone.
+- `SKILL.md` frontmatter 用真正的 YAML 解析器验证通过；`description` 已加引号，避免未转义的 `: ` 让整个 Skill 被静默丢弃。
+- `scripts/check_video.py` 在真实 1080×1920 / 30fps 成片上运行通过，返回 `decode_ok: true` 且无 failures。
+- `scripts/contact_sheet.sh` 能从同一成片生成 1 秒接触表。
+- 公开包不含成片或会话日志，因此不能只靠本仓库复刻原片；案例只保留方法。
 
-## Privacy / anonymization
+## 隐私与匿名
 
-- No source clips, no golden video, no faces, no voices, no school/company names, no locations, no dates, no session/team logs, no personal paths.
-- The case study describes **what** happened and **why**, not **who/where**.
-- If you adapt this for a real client, get consent before publishing footage or identifiable stills.
+- 不含源素材、成片、人脸、声音、学校/公司名、地点、日期、会话/团队日志、个人路径。
+- 案例研究只讲“发生了什么、为什么”，不指认“谁、在哪里”。
+- 如果你把它用于真实客户项目，发布素材或可识别人像前必须先取得授权。
 
 ## License
 
-- **Code** (`scripts/`): MIT — see `LICENSE`.
-- **Documentation, methodology, and `SKILL.md`**: CC BY 4.0 — see `LICENSE-DOCS`.
+- **代码**（`scripts/`）：MIT，见 `LICENSE`。
+- **文档、方法论、`SKILL.md`**：CC BY 4.0，见 `LICENSE-DOCS`。
 
-Attribution for the docs: “video-production skill package” with a link to this repository.
+文档署名建议：“video-production skill package”，并附上本仓库链接。
